@@ -31,7 +31,7 @@ const ResultsList = ({ results, loading }) => {
     return (
       <Box sx={{ textAlign: "center", my: 4 }}>
         <Typography variant="h6" color="text.secondary">
-          No results found. Try a different search.
+          Try scraping leads.
         </Typography>
       </Box>
     );
