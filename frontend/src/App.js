@@ -1,25 +1,6 @@
-import React from "react";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
+import React, { useState } from "react";
 import SearchForm from "./components/SearchForm";
 import ResultsList from "./components/ResultsList";
-import { useState } from "react";
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#1976d2",
-    },
-    secondary: {
-      main: "#dc004e",
-    },
-  },
-  typography: {
-    fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
-  },
-});
 
 function App() {
   const [searchResults, setSearchResults] = useState([]);
@@ -69,30 +50,31 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Container maxWidth="lg">
-        <Box sx={{ my: 4 }}>
-          <h1 style={{ textAlign: "center", marginBottom: "2rem" }}>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center space-y-4 mb-8">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground">
             Lead Scraper
           </h1>
-          <p style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <p className="text-lg text-muted-foreground">
             Find cafes, schools, and restaurants in Surat, Vadodara, and
             Ahmedabad
           </p>
+        </div>
 
+        <div className="max-w-3xl mx-auto">
           <SearchForm onSearch={handleSearch} />
 
           {error && (
-            <Box sx={{ color: "error.main", textAlign: "center", my: 2 }}>
+            <div className="mt-4 p-4 bg-destructive/10 text-destructive rounded-lg text-center">
               {error}
-            </Box>
+            </div>
           )}
 
           <ResultsList results={searchResults} loading={loading} />
-        </Box>
-      </Container>
-    </ThemeProvider>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,39 +1,31 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  CircularProgress,
-  Pagination,
-  Link,
-  Rating,
-} from "@mui/material";
+import { Card, CardContent, CardHeader } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Star } from "lucide-react";
 
 const ResultsList = ({ results, loading }) => {
   const [page, setPage] = useState(1);
   const resultsPerPage = 9;
 
-  const handlePageChange = (event, value) => {
-    setPage(value);
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
   };
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
-        <CircularProgress />
-      </Box>
+      <div className="flex justify-center items-center my-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
     );
   }
 
   if (!results.length) {
     return (
-      <Box sx={{ textAlign: "center", my: 4 }}>
-        <Typography variant="h6" color="text.secondary">
+      <div className="text-center my-8">
+        <p className="text-lg text-muted-foreground">
           No results found. Try a different search.
-        </Typography>
-      </Box>
+        </p>
+      </div>
     );
   }
 
@@ -43,136 +35,86 @@ const ResultsList = ({ results, loading }) => {
   const totalPages = Math.ceil(results.length / resultsPerPage);
 
   return (
-    <Box
-      sx={{
-        width: "100vw",
-        maxWidth: "100%",
-        mx: "auto",
-        px: { xs: 2, sm: 3 },
-      }}
-    >
-      <Grid container spacing={{ xs: 2, sm: 3 }}>
+    <div className="w-full max-w-full mx-auto px-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentResults.map((place, index) => (
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={4}
+          <Card
             key={index}
-            sx={{
-              display: "flex",
-              width: "100%",
-              "& > *": {
-                width: "100%",
-              },
-            }}
+            className="w-full h-full flex flex-col transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg"
           >
-            <Card
-              elevation={2}
-              sx={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                transition: "transform 0.2s",
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  boxShadow: 4,
-                },
-              }}
-            >
-              {place.thumbnail && (
-                <Box
-                  component="img"
+            {place.thumbnail && (
+              <div className="relative w-full h-48">
+                <img
                   src={place.thumbnail}
                   alt={place.name}
-                  sx={{
-                    width: "100%",
-                    height: 200,
-                    objectFit: "cover",
-                  }}
+                  className="w-full h-full object-cover rounded-t-lg"
                 />
-              )}
-              <CardContent
-                sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
-              >
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  sx={{
-                    fontSize: { xs: "1rem", sm: "1.1rem" },
-                    fontWeight: 600,
-                  }}
-                >
-                  {place.name}
-                </Typography>
-
-                <Box sx={{ flexGrow: 1 }}>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 1 }}
-                  >
-                    <strong>Address:</strong> {place.address}
-                  </Typography>
-
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 1 }}
-                  >
-                    <strong>Phone:</strong> {place.phone}
-                  </Typography>
-
-                  {place.website !== "Not available" && (
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 1 }}
+              </div>
+            )}
+            <CardHeader className="pb-2">
+              <h3 className="text-lg font-semibold">{place.name}</h3>
+            </CardHeader>
+            <CardContent className="flex-grow space-y-2">
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium">Address:</span> {place.address}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium">Phone:</span> {place.phone}
+                </p>
+                {place.website !== "Not available" && (
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium">Website:</span>{" "}
+                    <a
+                      href={place.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
                     >
-                      <strong>Website:</strong>{" "}
-                      <Link href={place.website} target="_blank" rel="noopener">
-                        Visit Website
-                      </Link>
-                    </Typography>
-                  )}
-
-                  {place.rating !== "Not rated" && (
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <Rating
-                        value={parseFloat(place.rating)}
-                        precision={0.5}
-                        readOnly
-                        size="small"
-                      />
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ ml: 1 }}
-                      >
-                        ({place.reviews})
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
+                      Visit Website
+                    </a>
+                  </p>
+                )}
+                {place.rating !== "Not rated" && (
+                  <div className="flex items-center space-x-1">
+                    <div className="flex items-center">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-4 h-4 ${
+                            i < Math.floor(parseFloat(place.rating))
+                              ? "fill-primary text-primary"
+                              : "text-muted-foreground"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      ({place.reviews})
+                    </span>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         ))}
-      </Grid>
+      </div>
 
       {totalPages > 1 && (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 4, mb: 2 }}>
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={handlePageChange}
-            color="primary"
-            size="medium"
-          />
-        </Box>
+        <div className="flex justify-center space-x-2 mt-8 mb-4">
+          {[...Array(totalPages)].map((_, i) => (
+            <Button
+              key={i}
+              variant={page === i + 1 ? "default" : "outline"}
+              onClick={() => handlePageChange(i + 1)}
+              className="w-10 h-10"
+            >
+              {i + 1}
+            </Button>
+          ))}
+        </div>
       )}
-    </Box>
+    </div>
   );
 };
 
