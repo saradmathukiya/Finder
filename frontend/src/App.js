@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import SearchForm from "./components/SearchForm";
 import ResultsList from "./components/ResultsList";
+import Map from "./components/Map";
 
 function App() {
   const [searchResults, setSearchResults] = useState([]);
@@ -62,12 +63,18 @@ function App() {
           </p>
         </div>
 
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <SearchForm onSearch={handleSearch} />
 
           {error && (
             <div className="mt-4 p-4 bg-destructive/10 text-destructive rounded-lg text-center">
               {error}
+            </div>
+          )}
+
+          {searchResults.length > 0 && (
+            <div className="mt-8">
+              <Map leads={searchResults} />
             </div>
           )}
 

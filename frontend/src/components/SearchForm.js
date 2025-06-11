@@ -19,40 +19,40 @@ const SearchForm = ({ onSearch }) => {
   const cityAreas = {
     Surat: [
       "Adajan",
-      "Athwa",
-      "Vesu",
-      "Katargam",
-      "Piplod",
-      "Pal",
-      "Althan",
-      "Varachha",
-      "Sarthana",
+      // "Athwa",
+      // "Vesu",
+      // "Katargam",
+      // "Piplod",
+      // "Pal",
+      // "Althan",
+      // "Varachha",
+      // "Sarthana",
       "Mota Varachha",
     ],
-    Vadodara: [
-      "Alkapuri",
-      "Gotri",
-      "Fatehgunj",
-      "Akota",
-      "Manjalpur",
-      "Tandalja",
-      "Waghodia Road",
-      "Subhanpura",
-      "Karelibaug",
-      "Harni",
-    ],
-    Ahmedabad: [
-      "Satellite",
-      "Vastrapur",
-      "Navrangpura",
-      "Paldi",
-      "Bopal",
-      "Ghatlodia",
-      "Thaltej",
-      "Bodakdev",
-      "Sola",
-      "S.G. Highway",
-    ],
+    // Vadodara: [
+    //   "Alkapuri",
+    //   "Gotri",
+    //   "Fatehgunj",
+    //   "Akota",
+    //   "Manjalpur",
+    //   "Tandalja",
+    //   "Waghodia Road",
+    //   "Subhanpura",
+    //   "Karelibaug",
+    //   "Harni",
+    // ],
+    // Ahmedabad: [
+    //   "Satellite",
+    //   "Vastrapur",
+    //   "Navrangpura",
+    //   "Paldi",
+    //   "Bopal",
+    //   "Ghatlodia",
+    //   "Thaltej",
+    //   "Bodakdev",
+    //   "Sola",
+    //   "S.G. Highway",
+    // ],
   };
 
   const handleChange = (name, value) => {
@@ -89,8 +89,8 @@ const SearchForm = ({ onSearch }) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Surat">Surat</SelectItem>
-                  <SelectItem value="Vadodara">Vadodara</SelectItem>
-                  <SelectItem value="Ahmedabad">Ahmedabad</SelectItem>
+                  {/* <SelectItem value="Vadodara">Vadodara</SelectItem>
+                  <SelectItem value="Ahmedabad">Ahmedabad</SelectItem> */}
                 </SelectContent>
               </Select>
             </div>
