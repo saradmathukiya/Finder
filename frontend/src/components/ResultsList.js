@@ -22,9 +22,7 @@ const ResultsList = ({ results, loading }) => {
   if (!results.length) {
     return (
       <div className="text-center my-8">
-        <p className="text-lg text-muted-foreground">
-          No results found. Try a different search.
-        </p>
+        <p className="text-lg text-muted-foreground">Try a different search.</p>
       </div>
     );
   }

@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// Proxy endpoint for SerpAPI
+// Google Places API endpoint
 app.get("/api/search", async (req, res) => {
   try {
     const { query } = req.query;
@@ -37,39 +37,53 @@ app.get("/api/search", async (req, res) => {
       return res.status(400).json({ error: "Query parameter is required" });
     }
 
-    console.log("Making request to SerpAPI with params:", {
-      engine: "google_maps",
-      q: query,
-      type: "search",
-    });
+    console.log("Making request to Google Places API");
 
-    const response = await axios.get("https://serpapi.com/search.json", {
-      params: {
-        engine: "google_maps",
-        q: query,
-        type: "search",
-        api_key: process.env.SERPAPI_KEY,
+    // Using the new Places API v1
+    const searchResponse = await axios.post(
+      "https://places.googleapis.com/v1/places:searchText",
+      {
+        textQuery: query,
+        languageCode: "en",
+        regionCode: "IN",
       },
-    });
-
-    console.log("SerpAPI Response Status:", response.status);
-
-    // Remove thumbnail from results
-    if (response.data && response.data.local_results) {
-      response.data.local_results = response.data.local_results.map(
-        (result) => {
-          const { thumbnail, ...resultWithoutThumbnail } = result;
-          return resultWithoutThumbnail;
-        }
-      );
-    }
-
-    console.log(
-      "SerpAPI Response Data:",
-      JSON.stringify(response.data, null, 2)
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": process.env.GOOGLE_PLACES_API_KEY,
+          "X-Goog-FieldMask":
+            "places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.websiteUri,places.regularOpeningHours,places.types,places.internationalPhoneNumber",
+        },
+      }
     );
 
-    res.json(response.data);
+    if (
+      !searchResponse.data.places ||
+      searchResponse.data.places.length === 0
+    ) {
+      return res.json({ local_results: [] });
+    }
+
+    // Transform the results to match our existing format
+    const transformedResults = {
+      local_results: searchResponse.data.places.map((place) => ({
+        title: place.displayName?.text || "Unknown Name",
+        address: place.formattedAddress || "",
+        phone: place.internationalPhoneNumber || "",
+        website: place.websiteUri || "",
+        rating: place.rating || "",
+        reviews: place.userRatingCount || "",
+        type: place.types ? place.types[0] : "",
+        hours: place.regularOpeningHours?.weekdayDescriptions || [],
+        place_id: place.id,
+      })),
+    };
+
+    console.log(
+      "Transformed Response Data:",
+      JSON.stringify(transformedResults, null, 2)
+    );
+    res.json(transformedResults);
   } catch (error) {
     console.error("Detailed Error Information:");
     console.error("Error Message:", error.message);
