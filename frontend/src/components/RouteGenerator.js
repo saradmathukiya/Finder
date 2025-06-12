@@ -219,23 +219,18 @@ const RouteGenerator = ({ leads, salesmanLocation, isSharedRoute }) => {
                   Get Optimized Directions
                 </a>
                 {!isSharedRoute && (
-                  <>
-                    <div className="flex items-center space-x-2">
-                      <p className="text-sm text-muted-foreground">
-                        Share this route:
-                      </p>
-                      <Button
-                        onClick={() => copyToClipboard(route.shareableLink)}
-                        variant="outline"
-                        size="sm"
-                      >
-                        Copy Link
-                      </Button>
-                    </div>
-                    <p className="text-xs text-muted-foreground break-all">
-                      {route.shareableLink}
+                  <div className="flex items-center space-x-2">
+                    <p className="text-sm text-muted-foreground">
+                      Share this route:
                     </p>
-                  </>
+                    <Button
+                      onClick={() => copyToClipboard(route.shareableLink)}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Copy Link
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>
