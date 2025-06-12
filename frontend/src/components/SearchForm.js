@@ -11,7 +11,7 @@ import { Card, CardContent } from "../components/ui/card";
 
 const SearchForm = ({ onSearch }) => {
   const [formData, setFormData] = useState({
-    city: "",
+    city: "Surat",
     category: "",
     area: "",
   });
@@ -80,19 +80,9 @@ const SearchForm = ({ onSearch }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">City</label>
-              <Select
-                value={formData.city}
-                onValueChange={(value) => handleChange("city", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a city" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Surat">Surat</SelectItem>
-                  {/* <SelectItem value="Vadodara">Vadodara</SelectItem>
-                  <SelectItem value="Ahmedabad">Ahmedabad</SelectItem> */}
-                </SelectContent>
-              </Select>
+              <div className="h-9 w-full flex items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm">
+                Surat
+              </div>
             </div>
 
             <div className="space-y-2">
