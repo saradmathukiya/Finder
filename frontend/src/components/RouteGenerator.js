@@ -193,19 +193,21 @@ const RouteGenerator = ({ leads, salesmanLocation, isSharedRoute }) => {
                         {stop.address}
                       </p>
                     </div>
-                    <div className="ml-4 flex items-center">
-                      <Checkbox
-                        id={`visited-${stop.place_id}`}
-                        checked={visitedPlaces.has(stop.place_id)}
-                        onChange={() => handleVisitToggle(stop.place_id)}
-                      />
-                      <label
-                        htmlFor={`visited-${stop.place_id}`}
-                        className="ml-2 text-sm text-muted-foreground"
-                      >
-                        Visited
-                      </label>
-                    </div>
+                    {isSharedRoute && (
+                      <div className="ml-4 flex items-center">
+                        <Checkbox
+                          id={`visited-${stop.place_id}`}
+                          checked={visitedPlaces.has(stop.place_id)}
+                          onChange={() => handleVisitToggle(stop.place_id)}
+                        />
+                        <label
+                          htmlFor={`visited-${stop.place_id}`}
+                          className="ml-2 text-sm text-muted-foreground"
+                        >
+                          Visited
+                        </label>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

@@ -175,6 +175,7 @@ function App() {
                 leads={currentBatch}
                 area={searchResults[0]?.area}
                 onBatchComplete={handleBatchComplete}
+                isSharedRoute={isSharedRoute}
               />
               <RouteGenerator
                 leads={searchResults}

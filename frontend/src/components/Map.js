@@ -19,6 +19,7 @@ const Map = ({ leads, area, onBatchComplete }) => {
   const [visitedLeads, setVisitedLeads] = useState(new Set());
   const [mapLoaded, setMapLoaded] = useState(false);
   const [apiKey, setApiKey] = useState(null);
+  const [isSharedRoute, setIsSharedRoute] = useState(false);
 
   // Fetch the API key from our backend
   useEffect(() => {
@@ -206,22 +207,24 @@ const Map = ({ leads, area, onBatchComplete }) => {
                       ? `<p style="margin: 0 0 4px 0;">Website: ${lead.website}</p>`
                       : ""
                   }
-                  <button 
-                    onclick="window.parent.postMessage({ type: 'LEAD_VISITED', placeId: '${
-                      lead.place_id
-                    }' }, '*')"
-                    style="
-                      background-color: #4285F4;
-                      color: white;
-                      border: none;
-                      padding: 8px 16px;
-                      border-radius: 4px;
-                      cursor: pointer;
-                      margin-top: 8px;
-                    "
-                  >
-                    Mark as Visited
-                  </button>
+                  ${
+                    isSharedRoute
+                      ? `<button 
+                          onclick="window.parent.postMessage({ type: 'LEAD_VISITED', placeId: '${lead.place_id}' }, '*')"
+                          style="
+                            background-color: #4285F4;
+                            color: white;
+                            border: none;
+                            padding: 8px 16px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            margin-top: 8px;
+                          "
+                        >
+                          Mark as Visited
+                        </button>`
+                      : ""
+                  }
                 </div>
               `,
             });
@@ -275,7 +278,7 @@ const Map = ({ leads, area, onBatchComplete }) => {
     };
 
     updateMap();
-  }, [leads, area, visitedLeads, mapLoaded]);
+  }, [leads, area, visitedLeads, mapLoaded, isSharedRoute]);
 
   const handleLeadVisited = (event) => {
     if (event.data.type === "LEAD_VISITED") {
