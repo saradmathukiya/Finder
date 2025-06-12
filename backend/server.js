@@ -85,17 +85,25 @@ app.get("/api/search", async (req, res) => {
     );
     res.json(transformedResults);
   } catch (error) {
-    console.error("Detailed Error Information:");
-    console.error("Error Message:", error.message);
-    console.error("Error Response:", error.response?.data);
-    console.error("Error Status:", error.response?.status);
-    console.error("Full Error Object:", error);
+    console.error("Error in search endpoint:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to fetch data from Google Places API" });
+  }
+});
 
-    res.status(500).json({
-      error: "Failed to fetch data",
-      details: error.message,
-      response: error.response?.data,
-    });
+// New endpoint to get Google Maps API key
+app.get("/api/maps-key", (req, res) => {
+  try {
+    // Only return the key if it's a request from our frontend
+    const origin = req.headers.origin;
+    if (!origin || !process.env.ALLOWED_ORIGINS?.includes(origin)) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    res.json({ key: process.env.GOOGLE_MAPS_API_KEY });
+  } catch (error) {
+    console.error("Error in maps-key endpoint:", error);
+    res.status(500).json({ error: "Failed to get Maps API key" });
   }
 });
 
@@ -105,5 +113,5 @@ app.get("/health", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server is running on port ${port}`);
 });

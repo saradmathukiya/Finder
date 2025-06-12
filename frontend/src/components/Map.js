@@ -18,17 +18,32 @@ const Map = ({ leads, area, onBatchComplete }) => {
   const [currentBatch, setCurrentBatch] = useState([]);
   const [visitedLeads, setVisitedLeads] = useState(new Set());
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [apiKey, setApiKey] = useState(null);
+
+  // Fetch the API key from our backend
+  useEffect(() => {
+    const fetchApiKey = async () => {
+      try {
+        const response = await fetch(
+          "https://finder-237n.onrender.com/api/maps-key"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch API key");
+        }
+        const data = await response.json();
+        setApiKey(data.key);
+      } catch (error) {
+        console.error("Error fetching API key:", error);
+        setMapError("Failed to initialize map. Please try again later.");
+      }
+    };
+
+    fetchApiKey();
+  }, []);
 
   useEffect(() => {
     const initMap = async () => {
-      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-
-      if (!apiKey) {
-        setMapError(
-          "Google Maps API key is missing. Please add REACT_APP_GOOGLE_MAPS_API_KEY to your .env file."
-        );
-        return;
-      }
+      if (!apiKey) return;
 
       if (!mapRef.current) {
         setMapError("Map container is not available");
@@ -114,15 +129,13 @@ const Map = ({ leads, area, onBatchComplete }) => {
 
         setMapLoaded(true);
       } catch (error) {
-        console.error("Error loading Google Maps:", error);
-        setMapError(
-          "Failed to load Google Maps. Please check your API key and try again."
-        );
+        console.error("Error initializing map:", error);
+        setMapError("Failed to load Google Maps. Please try again later.");
       }
     };
 
     initMap();
-  }, [area]);
+  }, [apiKey, area]);
 
   useEffect(() => {
     if (!mapLoaded || !leads.length) return;
