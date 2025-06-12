@@ -154,8 +154,7 @@ function App() {
           </h1>
           {!isSharedRoute && (
             <p className="text-lg text-muted-foreground">
-              Find cafes, schools, and restaurants in Surat, Vadodara, and
-              Ahmedabad
+              Find cafes, schools, and restaurants in Mota Varachha and Adajan
             </p>
           )}
         </div>

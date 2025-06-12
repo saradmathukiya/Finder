@@ -6,6 +6,7 @@ import { Checkbox } from "./ui/checkbox";
 const RouteGenerator = ({ leads, salesmanLocation, isSharedRoute }) => {
   const [generatedRoutes, setGeneratedRoutes] = useState([]);
   const [visitedPlaces, setVisitedPlaces] = useState(new Set());
+  const [copiedRouteNumber, setCopiedRouteNumber] = useState(null);
 
   // Get the base URL for shareable links
   const getBaseUrl = () => {
@@ -141,8 +142,12 @@ const RouteGenerator = ({ leads, salesmanLocation, isSharedRoute }) => {
     });
   };
 
-  const copyToClipboard = (text) => {
+  const copyToClipboard = (text, routeNumber) => {
     navigator.clipboard.writeText(text);
+    setCopiedRouteNumber(routeNumber);
+    setTimeout(() => {
+      setCopiedRouteNumber(null);
+    }, 2000);
   };
 
   // If it's a shared route, automatically generate the route
@@ -225,13 +230,25 @@ const RouteGenerator = ({ leads, salesmanLocation, isSharedRoute }) => {
                     <p className="text-sm text-muted-foreground">
                       Share this route:
                     </p>
-                    <Button
-                      onClick={() => copyToClipboard(route.shareableLink)}
-                      variant="outline"
-                      size="sm"
-                    >
-                      Copy Link
-                    </Button>
+                    <div className="relative">
+                      <Button
+                        onClick={() =>
+                          copyToClipboard(
+                            route.shareableLink,
+                            route.batchNumber
+                          )
+                        }
+                        variant="outline"
+                        size="sm"
+                      >
+                        Copy Link
+                      </Button>
+                      {copiedRouteNumber === route.batchNumber && (
+                        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-2 py-1 rounded text-xs whitespace-nowrap">
+                          Link copied!
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
