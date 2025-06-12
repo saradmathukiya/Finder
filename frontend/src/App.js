@@ -12,8 +12,8 @@ function App() {
   const [error, setError] = useState(null);
   const [currentBatch, setCurrentBatch] = useState([]);
   const [visitedLeads, setVisitedLeads] = useState(new Set());
-  const [shareableLink, setShareableLink] = useState(null);
   const [selectedArea, setSelectedArea] = useState(null);
+  const [isSharedRoute, setIsSharedRoute] = useState(false);
 
   // Fixed salesman locations for different areas
   const salesmanLocations = {
@@ -71,7 +71,6 @@ function App() {
       setSearchResults(formattedResults);
       setCurrentBatch(formattedResults.slice(0, 5));
       setVisitedLeads(new Set());
-      generateShareableLink(searchParams, formattedResults.slice(0, 5));
     } catch (err) {
       setError(err.message);
       setSearchResults([]);
@@ -92,40 +91,26 @@ function App() {
     );
     const nextBatch = unvisitedLeads.slice(0, 5);
     setCurrentBatch(nextBatch);
-    generateShareableLink(
-      {
-        city: "Surat",
-        category: searchResults[0]?.type,
-        area: searchResults[0]?.area,
-      },
-      nextBatch
-    );
-  };
-
-  const generateShareableLink = (searchParams, batch) => {
-    const linkData = {
-      params: searchParams,
-      leads: batch,
-      timestamp: new Date().toISOString(),
-    };
-    const encodedData = encodeURIComponent(JSON.stringify(linkData));
-    const link = `${window.location.origin}${window.location.pathname}?data=${encodedData}`;
-    setShareableLink(link);
   };
 
   useEffect(() => {
-    // Check for shared link data in URL
+    // Check for shared batch data in URL
     const urlParams = new URLSearchParams(window.location.search);
-    const sharedData = urlParams.get("data");
+    const batchData = urlParams.get("batch");
 
-    if (sharedData) {
+    if (batchData) {
       try {
-        const decodedData = JSON.parse(decodeURIComponent(sharedData));
+        const decodedData = JSON.parse(decodeURIComponent(batchData));
         setSearchResults(decodedData.leads);
         setCurrentBatch(decodedData.leads);
-        setShareableLink(window.location.href);
+        setSelectedArea(
+          decodedData.salesmanLocation.name.toLowerCase().includes("adajan")
+            ? "adajan"
+            : "mota varachha"
+        );
+        setIsSharedRoute(true);
       } catch (err) {
-        console.error("Error parsing shared link data:", err);
+        console.error("Error parsing shared batch data:", err);
       }
     }
   }, []);
@@ -135,42 +120,23 @@ function App() {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center space-y-4 mb-8">
           <h1 className="text-4xl font-bold tracking-tight text-foreground">
-            Lead Scraper
+            {isSharedRoute ? "Sales Route" : "Lead Scraper"}
           </h1>
-          <p className="text-lg text-muted-foreground">
-            Find cafes, schools, and restaurants in Surat, Vadodara, and
-            Ahmedabad
-          </p>
+          {!isSharedRoute && (
+            <p className="text-lg text-muted-foreground">
+              Find cafes, schools, and restaurants in Surat, Vadodara, and
+              Ahmedabad
+            </p>
+          )}
         </div>
 
         <div className="max-w-7xl mx-auto">
-          <SearchForm onSearch={handleSearch} />
+          {!isSharedRoute && <SearchForm onSearch={handleSearch} />}
 
           {error && (
             <div className="mt-4 p-4 bg-destructive/10 text-destructive rounded-lg text-center">
               {error}
             </div>
-          )}
-
-          {shareableLink && (
-            <Card className="mt-4">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    Share this link with your sales team:
-                  </p>
-                  <Button
-                    onClick={() => {
-                      navigator.clipboard.writeText(shareableLink);
-                    }}
-                    variant="outline"
-                  >
-                    Copy Link
-                  </Button>
-                </div>
-                <p className="mt-2 text-sm break-all">{shareableLink}</p>
-              </CardContent>
-            </Card>
           )}
 
           {searchResults.length > 0 && (
@@ -183,6 +149,7 @@ function App() {
               <RouteGenerator
                 leads={searchResults}
                 salesmanLocation={getSalesmanLocation()}
+                isSharedRoute={isSharedRoute}
               />
             </div>
           )}
