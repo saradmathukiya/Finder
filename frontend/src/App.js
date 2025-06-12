@@ -40,7 +40,7 @@ function App() {
       const searchQuery = `${category} in ${area} ${city} Gujarat`;
 
       const response = await fetch(
-        `http://finder-237n.onrender.com/api/search?query=${encodeURIComponent(
+        `https://finder-237n.onrender.com/api/search?query=${encodeURIComponent(
           searchQuery
         )}`
       );
