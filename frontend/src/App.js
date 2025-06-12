@@ -7,13 +7,43 @@ import { Button } from "./components/ui/button";
 import { Card, CardContent } from "./components/ui/card";
 
 function App() {
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState(() => {
+    const savedResults = localStorage.getItem("searchResults");
+    return savedResults ? JSON.parse(savedResults) : [];
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [currentBatch, setCurrentBatch] = useState([]);
-  const [visitedLeads, setVisitedLeads] = useState(new Set());
-  const [selectedArea, setSelectedArea] = useState(null);
+  const [currentBatch, setCurrentBatch] = useState(() => {
+    const savedBatch = localStorage.getItem("currentBatch");
+    return savedBatch ? JSON.parse(savedBatch) : [];
+  });
+  const [visitedLeads, setVisitedLeads] = useState(() => {
+    const savedVisited = localStorage.getItem("visitedLeads");
+    return savedVisited ? new Set(JSON.parse(savedVisited)) : new Set();
+  });
+  const [selectedArea, setSelectedArea] = useState(() => {
+    return localStorage.getItem("selectedArea") || null;
+  });
   const [isSharedRoute, setIsSharedRoute] = useState(false);
+
+  // Save to localStorage whenever relevant state changes
+  useEffect(() => {
+    localStorage.setItem("searchResults", JSON.stringify(searchResults));
+  }, [searchResults]);
+
+  useEffect(() => {
+    localStorage.setItem("currentBatch", JSON.stringify(currentBatch));
+  }, [currentBatch]);
+
+  useEffect(() => {
+    localStorage.setItem("visitedLeads", JSON.stringify([...visitedLeads]));
+  }, [visitedLeads]);
+
+  useEffect(() => {
+    if (selectedArea) {
+      localStorage.setItem("selectedArea", selectedArea);
+    }
+  }, [selectedArea]);
 
   // Fixed salesman locations for different areas
   const salesmanLocations = {
@@ -69,7 +99,7 @@ function App() {
       }));
 
       setSearchResults(formattedResults);
-      setCurrentBatch(formattedResults.slice(0, 5));
+      setCurrentBatch(formattedResults);
       setVisitedLeads(new Set());
     } catch (err) {
       setError(err.message);
